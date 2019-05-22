@@ -40,12 +40,23 @@ checkout() {
 }
 
 updatePackages() {
+  yum -q clean expire-cache &> /dev/null
+
+  echo "Installing required repositories…"
+
+  yum install -q -y https://yum.kaos.st/get/$(uname -r).rpm &> /dev/null
+  yum install -q -y epel-release &> /dev/null
+
   echo "Updating system packages…"
 
   yum -q clean expire-cache &> /dev/null
   yum -q -y update &> /dev/null
 
-  echo "Packages successfully updated"
+  echo "Installing required packages…"
+
+  yum -q -y install nano mtl git tmux curl wget &> /dev/null
+
+  echo "Worker configuration successfully finished"
 }
 
 runTests() {
