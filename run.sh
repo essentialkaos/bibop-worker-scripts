@@ -11,8 +11,8 @@ LOG_FILE="/root/bibop.log"
 main() {
   local branch="$1"
 
-  checkout "$branch"
   updatePackages
+  checkout "$branch"
   runTests
 
   exit $?
@@ -40,6 +40,10 @@ checkout() {
 }
 
 updatePackages() {
+  if rpm -q kaos-repo &> /dev/null ; then
+    return
+  fi
+
   yum -q clean expire-cache &> /dev/null
 
   echo "Installing required repositories…"
