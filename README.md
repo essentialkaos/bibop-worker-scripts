@@ -6,6 +6,14 @@ This repository contains scripts used on [bibop](https://github.com/essentialkao
 - `update.sh` — script for updating `bibop` and `bibop-massive`;
 - `run.sh` — script for running tests.
 
+### Simple installation
+
+```bash
+curl -# -L -o self-update.sh https://kaos.sh/bibop-worker-scripts/self-update.sh && chmod +x self-update.sh
+./self-update.sh
+
+```
+
 ### Usage
 
 ```bash
