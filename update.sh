@@ -22,7 +22,8 @@ updateBibop() {
 updateBibopMassive() {
   local branch="$1"
 
-  curl -# -o /usr/bin/bibop-massive "https://raw.githubusercontent.com/essentialkaos/${branch}/develop/bibop-massive"
+  curl -# -o /usr/bin/bibop-massive "https://raw.githubusercontent.com/essentialkaos/bibop/${branch}/bibop-massive"
+
   chmod +x /usr/bin/bibop-massive
 }
 
