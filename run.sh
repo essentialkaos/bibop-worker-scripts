@@ -42,6 +42,7 @@ checkout() {
 updatePackages() {
   echo "Updating system packages…"
 
+  yum -q clean expire-cache &> /dev/null
   yum -q -y update &> /dev/null
 
   echo "Packages successfully updated"
