@@ -9,7 +9,7 @@ LOG_FILE="/root/bibop.log"
 ################################################################################
 
 main() {
-  local branch="$1"
+  local branch="${1:-develop}"
 
   updatePackages
   checkout "$branch"
