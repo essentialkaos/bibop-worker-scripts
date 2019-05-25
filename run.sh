@@ -68,6 +68,8 @@ updatePackages() {
 }
 
 runTests() {
+  echo "System is ready. Running tests…"
+
   if [[ ! -e "$ERROR_DIR" ]] ; then
     mkdir "$ERROR_DIR"
   fi
