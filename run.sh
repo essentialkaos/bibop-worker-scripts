@@ -29,10 +29,14 @@ checkout() {
   fi
 
   if [[ -n "$branch" ]] ; then
-    echo "Switching current branch to ${branch}…"
     pushd kaos-repo &> /dev/null
+
+      echo "Switching current branch to ${branch}…"
       git checkout "$branch" &> /dev/null
+
+      echo "Fetching the latest changes…"
       git pull &> /dev/null
+
     popd &> /dev/null
   fi
 
