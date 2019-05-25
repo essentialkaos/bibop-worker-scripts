@@ -49,6 +49,8 @@ installPackages() {
     opts="--disablerepo=$disablerepo"
   fi
 
+  yum clean expire-cache
+
   # shellcheck disable=SC2086
   yum $opts install "$pkgs"
 
