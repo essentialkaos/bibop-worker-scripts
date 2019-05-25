@@ -34,7 +34,7 @@ installPackages() {
     exit 1
   fi
 
-  pkgs=$(bibop -L "$recipe" 2>/dev/null | tr '\n' ' ')
+  pkgs=$(bibop -L "$recipe" 2>/dev/null)
 
   if [[ -z "$pkgs" ]] ; then
     echo "This recipe doesn't have any dependencies"
