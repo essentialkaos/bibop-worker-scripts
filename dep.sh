@@ -29,12 +29,12 @@ installPackages() {
   local recipe="$1"
   local opts pkgs
 
-  if [[ -z "$recipe" ]] ; then
+  if [[ -z "$recipe" || ! -e "$recipe" ]] ; then
     echo "You should define recipe"
     exit 1
   fi
 
-  pkgs=$(bibop -L "$recipe" | tr '\n' ' ')
+  pkgs=$(bibop -L "$recipe" 2>/dev/null | tr '\n' ' ')
 
   if [[ -z "$pkgs" ]] ; then
     echo "This recipe doesn't have any dependencies"
@@ -50,13 +50,13 @@ installPackages() {
   fi
 
   # shellcheck disable=SC2086
-  yum -y $opts install "$pkgs"
+  yum $opts install "$pkgs"
 
   return $?
 }
 
 uninstallPackages() {
-  yum -y history undo last
+  yum history undo last
   return $?
 }
 
