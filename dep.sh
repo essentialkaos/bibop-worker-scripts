@@ -17,9 +17,9 @@ main() {
   fi
 
   case $action in
-    "install")    installPackages "$recipe" ;;
-    "uninstall" ) uninstallPackages ;;
-    *)            echo "Unknown action" ;;
+    "install"|"i" )    installPackages "$recipe" ;;
+    "uninstall"|"u" )  uninstallPackages ;;
+    *)                 echo "Unknown action" ;;
   esac
 
   exit $?
