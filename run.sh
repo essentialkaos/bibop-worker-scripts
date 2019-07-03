@@ -31,7 +31,7 @@ main() {
   if [[ -n "$validate" ]] ; then
     runValidation
   else
-    runTests
+    runTests "$branch"
   fi
 
   exit $?
@@ -121,9 +121,16 @@ runTests() {
     mkdir "$ERROR_DIR"
   fi
 
+  local opts
+  local branch="$1"
+
+  if [[ "$branch" == "develop" ]] ; then
+    opts="-ER kaos-testing"
+  fi
+
   bibop-massive -e "$ERROR_DIR" \
                 -l "$LOG_FILE" \
-                -ER kaos-testing \
+                $opts \
                 /root/kaos-repo/tests
 
   return $?
