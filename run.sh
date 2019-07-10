@@ -43,20 +43,13 @@ checkout() {
   pushd /root &> /dev/null
 
   if [[ ! -e kaos-repo ]] ; then
-    echo "Checkout repository…"
-    git clone "$REPO" &> /dev/null
-  fi
-
-  if [[ -n "$branch" ]] ; then
-    pushd kaos-repo &> /dev/null
-
-      echo "Switching current branch to ${branch}…"
-      git checkout "$branch" &> /dev/null
-
-      echo "Fetching the latest changes…"
-      git pull &> /dev/null
-
-    popd &> /dev/null
+    if [[ -n "$branch" ]] ; then
+      echo "Checkout repository…"
+      git clone --depth=1 -b "$branch" "$REPO" &> /dev/null
+    else
+      echo "Checkout repository…"
+      git clone --depth=1 "$REPO" &> /dev/null
+    fi
   fi
 
   popd &> /dev/null
