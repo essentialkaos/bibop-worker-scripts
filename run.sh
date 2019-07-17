@@ -44,7 +44,7 @@ checkout() {
 
   if [[ ! -e kaos-repo ]] ; then
     if [[ -n "$branch" ]] ; then
-      echo "Checkout repository…"
+      echo "Checkout repository (branch: $branch)…"
       git clone --depth=1 -b "$branch" "$REPO" &> /dev/null
     else
       echo "Checkout repository…"
