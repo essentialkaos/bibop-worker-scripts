@@ -50,6 +50,9 @@ checkout() {
       echo "Checkout repository…"
       git clone --depth=1 "$REPO" &> /dev/null
     fi
+  else
+    echo "Fetching the latests changes from repository…"
+    git pull &> /dev/null
   fi
 
   popd &> /dev/null
