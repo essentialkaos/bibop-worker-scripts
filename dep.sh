@@ -41,6 +41,8 @@ installPackages() {
     exit 0
   fi
 
+  echo "--> $pkgs"
+
   if [[ -n "$enablerepo" ]] ; then
     opts="--enablerepo=$enablerepo"
   fi
