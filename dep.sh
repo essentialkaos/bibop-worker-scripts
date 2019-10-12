@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1117,SC2034,SC2154,SC2181
 
 ################################################################################
 
@@ -51,6 +52,7 @@ installPackages() {
     opts="--disablerepo=$disablerepo"
   fi
 
+  # shellcheck disable=SC2086
   yum $opts clean expire-cache
 
   # shellcheck disable=SC2086
@@ -64,7 +66,7 @@ uninstallPackages() {
   return $?
 }
 
-## OPTIONS PARSING 4 ###########################################################
+## ARGUMENTS PARSING 4 #################################################################
 
 [[ $# -eq 0 ]] && main && exit $?
 
@@ -125,13 +127,16 @@ while [[ -n "$1" ]] ; do
 
       unset argm && shift && continue
     else
+      # shellcheck disable=SC2178
       arg=${arg//-/_}
 
       if [[ -z "$argn" ]] ; then
+        # shellcheck disable=SC2128
         argn=$arg
       else
         # shellcheck disable=SC2015
         [[ -z "$argk" ]] && ( declare -F showArgValWarn &>/dev/null && showArgValWarn "--$argn" ) || declare "$argn=true"
+        # shellcheck disable=SC2128
         argn=$arg
       fi
 

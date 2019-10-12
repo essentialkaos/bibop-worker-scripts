@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1117,SC2034,SC2154,SC2181
 
 ################################################################################
 
@@ -41,7 +42,7 @@ checkout() {
   local branch="$1"
   local status
 
-  pushd /root &> /dev/null
+  pushd /root &> /dev/null || return
 
   if [[ ! -e kaos-repo ]] ; then
     if [[ -n "$branch" ]] ; then
@@ -66,7 +67,7 @@ checkout() {
     echo "The latests version of specs and recipes successfully fetched"
   fi
 
-  popd &> /dev/null
+  popd &> /dev/null || return
 }
 
 updatePackages() {
@@ -81,6 +82,7 @@ updatePackages() {
 
   echo "Installing required repositories…"
 
+  # shellcheck disable=SC2046
   if ! yum install -q -y https://yum.kaos.st/get/$(uname -r).rpm &> /dev/null ; then
     echo "Can't install kaos-repo package"
     return 1
@@ -135,15 +137,13 @@ runTests() {
     opts="-ER kaos-testing"
   fi
 
-  bibop-massive -e "$ERROR_DIR" \
-                -l "$LOG_FILE" \
-                $opts \
-                /root/kaos-repo/tests
+  # shellcheck disable=SC2086
+  bibop-massive -e "$ERROR_DIR" -l "$LOG_FILE" $opts /root/kaos-repo/tests
 
   return $?
 }
 
-## OPTIONS PARSING 4 ###########################################################
+## ARGUMENTS PARSING 4 #################################################################
 
 [[ $# -eq 0 ]] && main && exit $?
 
@@ -204,13 +204,16 @@ while [[ -n "$1" ]] ; do
 
       unset argm && shift && continue
     else
+      # shellcheck disable=SC2178
       arg=${arg//-/_}
 
       if [[ -z "$argn" ]] ; then
+        # shellcheck disable=SC2128
         argn=$arg
       else
         # shellcheck disable=SC2015
         [[ -z "$argk" ]] && ( declare -F showArgValWarn &>/dev/null && showArgValWarn "--$argn" ) || declare "$argn=true"
+        # shellcheck disable=SC2128
         argn=$arg
       fi
 

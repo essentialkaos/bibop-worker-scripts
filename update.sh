@@ -17,6 +17,8 @@ main() {
 updateBibop() {
   bash <(curl -fsSL https://apps.kaos.st/get) bibop
   chmod +x bibop
+
+  # shellcheck disable=SC2216
   yes | mv bibop /usr/bin/ &> /dev/null
 }
 
