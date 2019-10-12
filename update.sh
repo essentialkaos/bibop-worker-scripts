@@ -5,12 +5,13 @@
 main() {
   local branch="${1:-master}"
 
-  echo "Updating bibop apps…"
+  echo "Updating bibop binary and helpers…"
 
   updateBibop
   updateBibopMassive "$branch"
+  updateBibopMultiCheck "$branch"
 
-  echo "Apps successfully updated"
+  echo "Bibop binary and helper scripts successfully updated"
 }
 
 updateBibop() {
@@ -25,6 +26,14 @@ updateBibopMassive() {
   curl -# -o /usr/bin/bibop-massive "https://raw.githubusercontent.com/essentialkaos/bibop/${branch}/bibop-massive"
 
   chmod +x /usr/bin/bibop-massive
+}
+
+updateBibopMultiCheck() {
+  local branch="$1"
+
+  curl -# -o /usr/bin/bibop-multi-check "https://raw.githubusercontent.com/essentialkaos/bibop/${branch}/bibop-multi-check"
+
+  chmod +x /usr/bin/bibop-multi-check
 }
 
 ################################################################################

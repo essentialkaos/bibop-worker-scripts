@@ -39,6 +39,7 @@ main() {
 
 checkout() {
   local branch="$1"
+  local status
 
   pushd /root &> /dev/null
 
@@ -46,13 +47,23 @@ checkout() {
     if [[ -n "$branch" ]] ; then
       echo "Checkout repository (branch: $branch)…"
       git clone --depth=1 -b "$branch" "$REPO" &> /dev/null
+      status=$?
     else
       echo "Checkout repository…"
       git clone --depth=1 "$REPO" &> /dev/null
+      status=$?
     fi
   else
     echo "Fetching the latests changes from repository…"
     git pull &> /dev/null
+    status=$?
+  fi
+
+  if [[ $status -ne 0 ]] ; then
+    echo "Can't checkout repository with specs and recipes"
+    exit 1
+  else
+    echo "The latests version of specs and recipes successfully fetched"
   fi
 
   popd &> /dev/null
