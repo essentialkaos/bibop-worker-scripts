@@ -1,4 +1,4 @@
-## Bibop Worker Scripts
+## Bibop Worker Scripts [![Build Status](https://travis-ci.org/essentialkaos/bibop-worker-scripts.svg?branch=master)](https://travis-ci.org/essentialkaos/bibop-worker-scripts)
 
 This repository contains scripts used on [bibop](https://github.com/essentialkaos/bibop) workers.
 
