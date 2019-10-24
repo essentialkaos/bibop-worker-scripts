@@ -55,9 +55,13 @@ checkout() {
       status=$?
     fi
   else
+    pushd kaos-repo &> /dev/null || return
+
     echo "Fetching the latests changes from repository…"
     git pull &> /dev/null
     status=$?
+
+    popd &> /dev/null || return
   fi
 
   if [[ $status -ne 0 ]] ; then
