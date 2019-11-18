@@ -9,12 +9,12 @@ branches:
   - develop
 
 before_install:
-  - wget https://storage.googleapis.com/shellcheck/shellcheck-latest.linux.x86_64.tar.xz
-  - tar xf shellcheck-latest.linux.x86_64.tar.xz
-  - ./shellcheck-latest/shellcheck --version
+  - wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
+  - tar xf shellcheck-stable.linux.x86_64.tar.xz
+  - ./shellcheck-stable/shellcheck --version
 
 script:
-  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck dep.sh'
-  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck run.sh'
-  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck self-update.sh'
-  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck update.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck dep.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck run.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck self-update.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck update.sh'
