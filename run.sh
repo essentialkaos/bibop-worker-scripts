@@ -5,7 +5,7 @@
 
 REPO="https://github.com/essentialkaos/kaos-repo.git"
 ERROR_DIR="/root/errors"
-MARK_FILE="/root/.bibop-worker"
+MARKER_FILE="/root/.bibop-worker"
 LOG_FILE="/root/bibop.log"
 
 ################################################################################
@@ -76,7 +76,7 @@ checkout() {
 }
 
 updatePackages() {
-  if [[ -f "$MARK_FILE" ]] ; then
+  if [[ -f "$MARKER_FILE" ]] ; then
     return
   fi
 
@@ -117,7 +117,7 @@ updatePackages() {
     return 1
   fi
 
-  touch "$MARK_FILE"
+  touch "$MARKER_FILE"
 
   echo "Worker configuration successfully finished"
 }
