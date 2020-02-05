@@ -87,15 +87,19 @@ updatePackages() {
 
   echo "Installing required repositories…"
 
-  # shellcheck disable=SC2046
-  if ! yum install -q -y https://yum.kaos.st/get/$(uname -r).rpm &> /dev/null ; then
-    echo "Can't install kaos-repo package"
-    return 1
+  if ! rpm -q kaos-repo &> /dev/null ; then
+    # shellcheck disable=SC2046
+    if ! yum install -q -y https://yum.kaos.st/get/$(uname -r).rpm &> /dev/null ; then
+      echo "Can't install kaos-repo package"
+      return 1
+    fi
   fi
 
-  if ! yum install -q -y epel-release &> /dev/null ; then
-    echo "Can't install epel-release package"
-    return 1
+  if ! rpm -q epel-release &> /dev/null ; then
+    if ! yum install -q -y epel-release &> /dev/null ; then
+      echo "Can't install epel-release package"
+      return 1
+    fi
   fi
 
   echo "Updating system packages…"
