@@ -133,12 +133,14 @@ runValidation() {
 runTests() {
   echo "System is ready. Running tests…"
 
-  if [[ ! -e "$ERROR_DIR" ]] ; then
-    mkdir "$ERROR_DIR"
-  fi
-
   local opts
   local branch="$1"
+
+  if [[ -e "$ERROR_DIR" ]] ; then
+    rm -rf "$ERROR_DIR"
+  fi
+
+  mkdir "$ERROR_DIR"
 
   if [[ "$branch" == "develop" ]] ; then
     opts="-ER kaos-testing"
