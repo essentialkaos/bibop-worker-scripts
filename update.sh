@@ -2,6 +2,10 @@
 
 ################################################################################
 
+SOURCE_URL="https://raw.githubusercontent.com/essentialkaos/bibop"
+
+################################################################################
+
 main() {
   local branch="${1:-master}"
 
@@ -25,7 +29,7 @@ updateBibop() {
 updateBibopMassive() {
   local branch="$1"
 
-  curl -# -o /usr/bin/bibop-massive "https://raw.githubusercontent.com/essentialkaos/bibop/${branch}/bibop-massive"
+  download "${branch}/bibop-massive" "/usr/bin/bibop-massive"
 
   chmod +x /usr/bin/bibop-massive
 }
@@ -33,9 +37,21 @@ updateBibopMassive() {
 updateBibopMultiCheck() {
   local branch="$1"
 
-  curl -# -o /usr/bin/bibop-multi-check "https://raw.githubusercontent.com/essentialkaos/bibop/${branch}/bibop-multi-check"
+  download "${branch}/bibop-multi-check" "/usr/bin/bibop-multi-check"
 
   chmod +x /usr/bin/bibop-multi-check
+}
+
+download() {
+  local path="$1"
+  local output="$2"
+  local rnd
+
+  rnd=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1)
+
+  curl -# -o "$output" "$SOURCE_URL/${path}?r${rnd}"
+
+  return $?
 }
 
 ################################################################################
