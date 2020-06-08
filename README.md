@@ -1,4 +1,13 @@
-## Bibop Worker Scripts [![Build Status](https://travis-ci.com/essentialkaos/bibop-worker-scripts.svg?branch=master)](https://travis-ci.com/essentialkaos/bibop-worker-scripts)
+<p align="center"><a href="#readme"><img src="https://gh.kaos.st/bibop-worker-scripts.svg"/></a></p>
+
+<p align="center">
+  <a href="https://travis-ci.com/essentialkaos/7zcat"><img src="https://travis-ci.com/essentialkaos/7zcat.svg"></a>
+  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
+</p>
+
+<p align="center"><a href="#installation">Installation</a> • <a href="#usage-example">Usage example</a> • <a href="#license">License</a></p>
+
+<br/>
 
 This repository contains scripts used on [bibop](https://github.com/essentialkaos/bibop) workers.
 
@@ -7,7 +16,7 @@ This repository contains scripts used on [bibop](https://github.com/essentialkao
 - `dep.sh` — script for installing/uninstalling reqiured packages;
 - `run.sh` — script for running tests.
 
-### Simple installation
+### Installation
 
 ```bash
 curl -# -L -o self-update.sh https://kaos.sh/bibop-worker-scripts/self-update.sh && chmod +x self-update.sh && ./self-update.sh && ./update.sh
@@ -22,3 +31,9 @@ curl -# -L -o self-update.sh https://kaos.sh/bibop-worker-scripts/self-update.sh
 ./run.sh develop
 
 ```
+
+### License
+
+[EKOL](https://essentialkaos.com/ekol)
+
+<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>
