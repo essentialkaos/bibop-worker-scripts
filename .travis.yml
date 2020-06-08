@@ -1,7 +1,11 @@
 language: bash
 
-os:
-  - linux
+matrix:
+  fast_finish: true
+
+env:
+  global:
+    - SHELLCHECK_VERSION=0.7.1
 
 branches:
   only:
@@ -9,12 +13,13 @@ branches:
   - develop
 
 before_install:
-  - wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
-  - tar xf shellcheck-stable.linux.x86_64.tar.xz
-  - ./shellcheck-stable/shellcheck --version
+  - wget https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
+  - tar xf shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
+  - mv shellcheck-v${SHELLCHECK_VERSION} shellcheck-latest
+  - ./shellcheck-latest/shellcheck --version
 
 script:
-  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck dep.sh'
-  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck run.sh'
-  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck self-update.sh'
-  - bash -c 'shopt -s globstar; ./shellcheck-stable/shellcheck update.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck dep.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck run.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck self-update.sh'
+  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck update.sh'
