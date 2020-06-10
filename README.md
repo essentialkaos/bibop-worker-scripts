@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/bibop-worker-scripts.svg"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.com/essentialkaos/7zcat"><img src="https://travis-ci.com/essentialkaos/7zcat.svg"></a>
+  <a href="https://travis-ci.com/essentialkaos/bibop-worker-scripts"><img src="https://travis-ci.com/essentialkaos/bibop-worker-scripts.svg"></a>
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
 </p>
 

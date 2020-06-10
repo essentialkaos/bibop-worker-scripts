@@ -1,6 +1,6 @@
-language: bash
+language: shell
 
-matrix:
+jobs:
   fast_finish: true
 
 env:
