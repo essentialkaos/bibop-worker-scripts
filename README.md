@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://travis-ci.com/essentialkaos/bibop-worker-scripts"><img src="https://travis-ci.com/essentialkaos/bibop-worker-scripts.svg"></a>
-  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
+  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
 <p align="center"><a href="#installation">Installation</a> • <a href="#usage-example">Usage example</a> • <a href="#license">License</a></p>
@@ -34,6 +34,6 @@ curl -# -L -o self-update.sh https://kaos.sh/bibop-worker-scripts/self-update.sh
 
 ### License
 
-[EKOL](https://essentialkaos.com/ekol)
+[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 <p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>
