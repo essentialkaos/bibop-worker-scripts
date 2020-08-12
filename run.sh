@@ -10,8 +10,8 @@ LOG_FILE="/root/bibop.log"
 
 ################################################################################
 
-SUPPORTED_OPTS="!validate !prepare"
-SHORT_OPTS="V:!validate P:!prepare"
+SUPPORTED_OPTS="!validate !prepare !recheck"
+SHORT_OPTS="V:!validate P:!prepare R:!recheck"
 
 ################################################################################
 
@@ -148,6 +148,10 @@ runTests() {
 
   if [[ "$branch" == "develop" ]] ; then
     opts="-ER kaos-testing"
+  fi
+
+  if [[ -n "$recheck" ]] ; then
+    opts="$opts -R"
   fi
 
   # shellcheck disable=SC2086
