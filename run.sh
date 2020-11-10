@@ -3,6 +3,39 @@
 
 ################################################################################
 
+NORM=0
+BOLD=1
+UNLN=4
+RED=31
+GREEN=32
+YELLOW=33
+BLUE=34
+MAG=35
+CYAN=36
+GREY=37
+DARK=90
+
+CL_NORM="\e[0m"
+CL_BOLD="\e[0;${BOLD};49m"
+CL_UNLN="\e[0;${UNLN};49m"
+CL_RED="\e[0;${RED};49m"
+CL_GREEN="\e[0;${GREEN};49m"
+CL_YELLOW="\e[0;${YELLOW};49m"
+CL_BLUE="\e[0;${BLUE};49m"
+CL_MAG="\e[0;${MAG};49m"
+CL_CYAN="\e[0;${CYAN};49m"
+CL_GREY="\e[0;${GREY};49m"
+CL_DARK="\e[0;${DARK};49m"
+CL_BL_RED="\e[1;${RED};49m"
+CL_BL_GREEN="\e[1;${GREEN};49m"
+CL_BL_YELLOW="\e[1;${YELLOW};49m"
+CL_BL_BLUE="\e[1;${BLUE};49m"
+CL_BL_MAG="\e[1;${MAG};49m"
+CL_BL_CYAN="\e[1;${CYAN};49m"
+CL_BL_GREY="\e[1;${GREY};49m"
+
+################################################################################
+
 REPO="https://github.com/essentialkaos/kaos-repo.git"
 ERROR_DIR="/root/errors"
 MARKER_FILE="/root/.bibop-worker"
@@ -47,18 +80,18 @@ checkout() {
 
   if [[ ! -e kaos-repo ]] ; then
     if [[ -n "$branch" ]] ; then
-      echo "Checkout repository (branch: $branch)…"
+      show "Checkout repository (branch: $branch)…"
       git clone --depth=1 -b "$branch" "$REPO" &> /dev/null
       status=$?
     else
-      echo "Checkout repository…"
+      show "Checkout repository…"
       git clone --depth=1 "$REPO" &> /dev/null
       status=$?
     fi
   else
     pushd kaos-repo &> /dev/null || return
 
-    echo "Fetching the latests changes from repository…"
+    show "Fetching the latests changes from repository…"
     git pull &> /dev/null
     status=$?
 
@@ -66,10 +99,10 @@ checkout() {
   fi
 
   if [[ $status -ne 0 ]] ; then
-    echo "Can't checkout repository with specs and recipes"
+    error "Can't checkout repository with specs and recipes"
     exit 1
   else
-    echo "The latests version of specs and recipes successfully fetched"
+    show "The latests version of specs and recipes successfully fetched" $GREEN
   fi
 
   popd &> /dev/null || return
@@ -81,53 +114,53 @@ updatePackages() {
   fi
 
   if ! yum -q clean expire-cache &> /dev/null ; then
-    echo "Can't clean yum cache"
+    error "Can't clean yum cache"
     return 1
   fi
 
-  echo "Installing required repositories…"
+  show "Installing required repositories…"
 
   if ! rpm -q kaos-repo &> /dev/null ; then
     # shellcheck disable=SC2046
     if ! yum install -q -y https://yum.kaos.st/get/$(uname -r).rpm &> /dev/null ; then
-      echo "Can't install kaos-repo package"
+      error "Can't install kaos-repo package"
       return 1
     fi
   fi
 
   if ! rpm -q epel-release &> /dev/null ; then
     if ! yum install -q -y epel-release &> /dev/null ; then
-      echo "Can't install epel-release package"
+      error "Can't install epel-release package"
       return 1
     fi
   fi
 
-  echo "Updating system packages…"
+  show "Updating system packages…"
 
   if ! yum -q clean expire-cache &> /dev/null ; then
-    echo "Can't clean yum cache"
+    error "Can't clean yum cache"
     return 1
   fi
   
   if ! yum -q -y update &> /dev/null ; then
-    echo "Can't update system packages"
+    error "Can't update system packages"
     return 1
   fi
 
-  echo "Installing required packages…"
+  show "Installing required packages…"
 
   if ! yum -q -y install nano mtl git tmux curl wget &> /dev/null ; then
-    echo "Can't install required packages"
+    error "Can't install required packages"
     return 1
   fi
 
   touch "$MARKER_FILE"
 
-  echo "Worker configuration successfully finished"
+  show "Worker configuration successfully finished!" $GREEN
 }
 
 runValidation() {
-  echo "System is ready. Running recipes validation…"
+  show "System is ready. Running recipes validation…"
 
   bibop-massive -V /root/kaos-repo/tests
 
@@ -135,7 +168,7 @@ runValidation() {
 }
 
 runTests() {
-  echo "System is ready. Running tests…"
+  show "System is ready. Running tests…"
 
   local opts
   local branch="$1"
@@ -158,6 +191,23 @@ runTests() {
   bibop-massive -e "$ERROR_DIR" -l "$LOG_FILE" $opts /root/kaos-repo/tests
 
   return $?
+}
+
+show() {
+  if [[ -n "$2" && -z "$no_colors" ]] ; then
+    echo -e "\e[${2}m${1}\e[0m"
+  else
+    echo -e "$*"
+  fi
+}
+
+error() {
+  show "$@" $RED 1>&2
+}
+
+showArgWarn() {
+  error "Unknown option $1" $RED
+  exit 1
 }
 
 ## OPTIONS PARSING 5 ###################################################################
