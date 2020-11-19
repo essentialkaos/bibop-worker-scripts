@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/bibop-worker-scripts.svg"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.com/essentialkaos/bibop-worker-scripts"><img src="https://travis-ci.com/essentialkaos/bibop-worker-scripts.svg"></a>
+  <a href="https://github.com/essentialkaos/bibop-worker-scripts/actions"><img src="https://github.com/essentialkaos/bibop-worker-scripts/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
