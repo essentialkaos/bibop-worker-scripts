@@ -2,6 +2,7 @@
 
 ################################################################################
 
+REPO="https://kaos.sh/bibop-worker-scripts"
 SCRIPTS_DIR="/root"
 
 ################################################################################
@@ -9,14 +10,22 @@ SCRIPTS_DIR="/root"
 main() {
   echo "Updating scripts…"
 
-  curl -# -L -o $SCRIPTS_DIR/run.sh https://kaos.sh/bibop-worker-scripts/run.sh
-  curl -# -L -o $SCRIPTS_DIR/dep.sh https://kaos.sh/bibop-worker-scripts/dep.sh
-  curl -# -L -o $SCRIPTS_DIR/update.sh https://kaos.sh/bibop-worker-scripts/update.sh
-  curl -# -L -o $SCRIPTS_DIR/self-update.sh https://kaos.sh/bibop-worker-scripts/self-update.sh
+  download "run.sh"
+  download "dep.sh"
+  download "update.sh"
+  download "self-update.sh"
 
-  chmod +x $SCRIPTS_DIR/*.sh
+  echo "All scripts successfully updated"
+}
 
-  echo "Scripts successfully updated"
+download() {
+  local file="$1"
+
+  curl -# -L -o "$SCRIPTS_DIR/$file" "$REPO/$file"
+
+  if [[ -f "$SCRIPTS_DIR/$file" ]] ; then
+    chmod +x "$SCRIPTS_DIR/$file"
+  fi
 }
 
 ################################################################################
