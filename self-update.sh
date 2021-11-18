@@ -8,6 +8,11 @@ SCRIPTS_DIR="/root"
 ################################################################################
 
 main() {
+  if [[ $(id -u) != "0" ]] ; then
+    echo "You must run this script as root"
+    exit 1
+  fi
+
   echo "Updating scripts…"
 
   download "run.sh"
