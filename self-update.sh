@@ -65,8 +65,11 @@ main() {
 # Echo: No
 download() {
   local file="$1"
+  local rnd
 
-  curl -L -o "$SCRIPTS_DIR/$file" "$REPO/$file" &> /dev/null
+  rnd=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1)
+
+  curl -L -o "$SCRIPTS_DIR/$file" "$REPO/$file?r${rnd}" &> /dev/null
 
   if [[ $? -ne 0 ]] ; then
     printStatusDot true
