@@ -37,6 +37,7 @@ CL_BL_BLUE="\e[1;${BLUE};49m"
 CL_BL_MAG="\e[1;${MAG};49m"
 CL_BL_CYAN="\e[1;${CYAN};49m"
 CL_BL_GREY="\e[1;${GREY};49m"
+CL_BIBOP="\e[38;5;85m"
 
 ################################################################################
 
@@ -46,7 +47,7 @@ main() {
     exit 1
   fi
 
-  showm "Updating bibop worker scripts: "
+  showm "Updating ${CL_BIBOP}bibop${CL_NORM} worker scripts: "
 
   download "run.sh"
   download "dep.sh"
