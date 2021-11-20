@@ -5,7 +5,7 @@
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
-<p align="center"><a href="#installation">Installation</a> • <a href="#usage-example">Usage example</a> • <a href="#license">License</a></p>
+<p align="center"><a href="#installation">Installation</a> • <a href="#license">License</a></p>
 
 <br/>
 
@@ -19,16 +19,7 @@ This repository contains scripts used on [bibop](https://github.com/essentialkao
 ### Installation
 
 ```bash
-curl -# -L -o self-update.sh https://kaos.sh/bibop-worker-scripts/self-update.sh && chmod +x self-update.sh && ./self-update.sh && ./update.sh
-
-```
-
-### Usage example
-
-```bash
-./self-update.sh
-./update.sh develop
-./run.sh develop
+bash <(curl -fsSL https://kaos.sh/bibop-worker-scripts/self-update.sh) && ./update.sh
 
 ```
 
