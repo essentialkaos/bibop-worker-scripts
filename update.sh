@@ -51,35 +51,35 @@ bibop_version=""
 ################################################################################
 
 main() {
-  if [[ $(id -u) != "0" ]] ; then
-    error "You must run this script as root"
-    exit 1
-  fi
-
   if [[ -n "$help" ]] ; then
     usage
     exit 0
   fi
 
-  show "Updating bibop binary and helpers…"
+  if [[ $(id -u) != "0" ]] ; then
+    error "You must run this script as root"
+    exit 1
+  fi
+
+  showm "Updating bibop & scripts: "
 
   updateBibop
   updateBibopMassive
   updateBibopMultiCheck
 
-  show "Bibop binary and helper scripts successfully updated!" $GREEN
+  show " DONE" $GREEN
 }
 
 updateBibop() {
-  echo "Updating bibop binary (${bibop_version:-latest})…"
-
   if [[ -z "$bibop_version" ]] ; then
-    bash <(curl -fsSL https://apps.kaos.st/get) bibop
+    bash <(curl -fsSL https://apps.kaos.st/get) bibop &> /dev/null
   else
-    bash <(curl -fsSL https://apps.kaos.st/get) bibop "$bibop_version"
+    bash <(curl -fsSL https://apps.kaos.st/get) bibop "$bibop_version" &> /dev/null
   fi
 
   if [[ $? -ne 0 ]] ; then
+    printStatusDot true
+    show " ERROR" $RED
     error "Can't download bibop binary"
     exit 1
   fi
@@ -88,28 +88,38 @@ updateBibop() {
 
   # shellcheck disable=SC2216
   yes | mv bibop /usr/bin/ &> /dev/null
+
+  printStatusDot
 }
 
 updateBibopMassive() {
   download "${branch}/bibop-massive" "/usr/bin/bibop-massive"
 
   if [[ $? -ne 0 ]] ; then
+    printStatusDot true
+    show " ERROR" $RED
     error "Can't download bibop-massive script"
     exit 1
   fi
 
   chmod +x /usr/bin/bibop-massive
+
+  printStatusDot
 }
 
 updateBibopMultiCheck() {
   download "${branch}/bibop-multi-check" "/usr/bin/bibop-multi-check"
 
   if [[ $? -ne 0 ]] ; then
+    printStatusDot true
+    show " ERROR" $RED
     error "Can't download bibop-multi-check script"
     exit 1
   fi
 
   chmod +x /usr/bin/bibop-multi-check
+
+  printStatusDot
 }
 
 # Download file from GitHub repository
@@ -126,9 +136,23 @@ download() {
 
   rnd=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1)
 
-  curl -# -o "$output" "$BIBOP_REPO/${path}?r${rnd}"
+  curl -o "$output" "$BIBOP_REPO/${path}?r${rnd}" &> /dev/null
 
   return $?
+}
+
+# Print status dot
+#
+# 1: Error flag (Boolean) [Optional]
+#
+# Code: No
+# Echo: No
+printStatusDot() {
+  if [[ -z "$1" ]] ; then
+    showm "•" $GREEN
+  else
+    showm "•" $RED
+  fi
 }
 
 # Show message
@@ -143,6 +167,21 @@ show() {
     echo -e "\e[${2}m${1}\e[0m"
   else
     echo -e "$*"
+  fi
+}
+
+# Show message without new line
+#
+# 1: Message (String)
+# 2: Message color (Number) [Optional]
+#
+# Code: No
+# Echo: No
+showm() {
+  if [[ -n "$2" && -z "$no_colors" ]] ; then
+    echo -e -n "\e[${2}m${1}\e[0m"
+  else
+    echo -e -n "$*"
   fi
 }
 
@@ -299,5 +338,3 @@ unset opt optn optm optk
 [[ -n "$KEEP_OPTS" ]] && main $optv || main ${optt:1}
 
 ################################################################################
-
-main "$@"
