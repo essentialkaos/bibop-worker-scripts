@@ -126,7 +126,7 @@ download() {
 
   rnd=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1)
 
-  curl -# -o "$output" "$SOURCE_URL/${path}?r${rnd}"
+  curl -# -o "$output" "$BIBOP_REPO/${path}?r${rnd}"
 
   return $?
 }
