@@ -70,6 +70,10 @@ main() {
   show " DONE" $GREEN
 }
 
+# Update bibop binary
+#
+# Code: No
+# Echo: No
 updateBibop() {
   if [[ -z "$bibop_version" ]] ; then
     bash <(curl -fsSL https://apps.kaos.st/get) bibop &> /dev/null
@@ -92,6 +96,10 @@ updateBibop() {
   printStatusDot
 }
 
+# Update bibop-massive script
+#
+# Code: No
+# Echo: No
 updateBibopMassive() {
   download "${branch}/bibop-massive" "/usr/bin/bibop-massive"
 
@@ -107,6 +115,10 @@ updateBibopMassive() {
   printStatusDot
 }
 
+# Update bibop-multi-check script
+#
+# Code: No
+# Echo: No
 updateBibopMultiCheck() {
   download "${branch}/bibop-multi-check" "/usr/bin/bibop-multi-check"
 
