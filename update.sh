@@ -67,6 +67,7 @@ main() {
   updateBibop
   updateBibopMassive
   updateBibopMultiCheck
+  updateBibopSOExported
 
   show " DONE" $GREEN
 }
@@ -131,6 +132,25 @@ updateBibopMultiCheck() {
   fi
 
   chmod +x /usr/bin/bibop-multi-check
+
+  printStatusDot
+}
+
+# Update bibop-so-exported script
+#
+# Code: No
+# Echo: No
+updateBibopSOExported() {
+  download "${branch}/bibop-so-exported" "/usr/bin/bibop-so-exported"
+
+  if [[ $? -ne 0 ]] ; then
+    printStatusDot true
+    show " ERROR" $RED
+    error "Can't download bibop-so-exported script"
+    exit 1
+  fi
+
+  chmod +x /usr/bin/bibop-so-exported
 
   printStatusDot
 }
