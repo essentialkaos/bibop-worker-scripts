@@ -81,7 +81,7 @@ main() {
     exit 1
   fi
 
-  process "$@"
+  start "$@"
 
   exit $?
 }
