@@ -3,7 +3,8 @@
 
 ################################################################################
 
-BIBOP_REPO="https://raw.githubusercontent.com/essentialkaos/bibop"
+APP="update.sh"
+VER="1.1.0"
 
 ################################################################################
 
@@ -41,8 +42,12 @@ CL_BIBOP="\e[38;5;85m"
 
 ################################################################################
 
-SUPPORTED_OPTS="branch bibop_version !help"
-SHORT_OPTS="b:branch B:bibop_version h:!help"
+BIBOP_REPO="https://raw.githubusercontent.com/essentialkaos/bibop"
+
+################################################################################
+
+SUPPORTED_OPTS="branch bibop_version !help !version"
+SHORT_OPTS="b:branch B:bibop_version h:!help v:!version"
 
 ################################################################################
 
@@ -51,7 +56,24 @@ bibop_version=""
 
 ################################################################################
 
+# Main function
+#
+# *: All arguments passed to script
+#
+# Code: No
+# Echo: No
 main() {
+  if [[ -n "$no_colors" || -n "$NO_COLOR" ]] ; then
+    unset NORM BOLD UNLN RED GREEN YELLOW BLUE MAG CYAN GREY DARK
+    unset CL_NORM CL_BOLD CL_UNLN CL_RED CL_GREEN CL_YELLOW CL_BLUE CL_MAG CL_CYAN CL_GREY CL_DARK
+    unset CL_BL_RED CL_BL_GREEN CL_BL_YELLOW CL_BL_BLUE CL_BL_MAG CL_BL_CYAN CL_BL_GREY CL_BL_DARK
+  fi
+
+  if [[ -n "$version" ]] ; then
+    about
+    exit 0
+  fi
+
   if [[ -n "$help" ]] ; then
     usage
     exit 0
@@ -62,6 +84,14 @@ main() {
     exit 1
   fi
 
+  update
+}
+
+# Start update process
+#
+# Code: No
+# Echo: No
+update() {
   showm "Updating ${CL_BIBOP}bibop${CL_NORM} & scripts: "
 
   updateBibop
@@ -165,13 +195,17 @@ updateBibopSOExported() {
 download() {
   local path="$1"
   local output="$2"
-  local rnd
+  local rnd http_code
 
   rnd=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1)
 
-  curl -o "$output" "$BIBOP_REPO/${path}?r${rnd}" &> /dev/null
+  http_code=$(curl -s -L -w "%{http_code}" -o "$output" "$BIBOP_REPO/${path}?r${rnd}")
 
-  return $?
+  if [[ "$http_code" != "200" ]] ; then
+    return 1
+  fi
+
+  return 0
 }
 
 # Print status dot
@@ -235,24 +269,37 @@ error() {
 # Echo: No
 usage() {
   show ""
-  show "${CL_BOLD}Usage:${CL_NORM} ./update.sh ${CL_GREEN}{options}${CL_NORM}"
+  show "${CL_BOLD}Usage:${CL_NORM} ./$APP ${CL_GREEN}{options}${CL_NORM}"
   show ""
   show "Options" $BOLD
   show ""
-  show "  ${CL_GREEN}--branch, -b${CL_NORM}           Source branch ${CL_DARK}(default: master)${CL_NORM}"
-  show "  ${CL_GREEN}--bibop-version, -B${CL_NORM}    Bibop version ${CL_DARK}(default: latest)${CL_NORM}"
-  show "  ${CL_GREEN}--help, -h${CL_NORM}             Show this help message"
+  show "  ${CL_GREEN}--branch, -b${CL_NORM} ${CL_GREY}branch${CL_NORM} ${CL_DARK}..........${CL_NORM} Source branch ${CL_DARK}(default: master)${CL_NORM}"
+  show "  ${CL_GREEN}--bibop-version, -B${CL_NORM} ${CL_GREY}version${CL_NORM} ${CL_DARK}..${CL_NORM} Bibop version ${CL_DARK}(default: latest)${CL_NORM}"
+  show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}...................${CL_NORM} Show this help message"
   show ""
   show "Examples" $BOLD
   show ""
-  show "  ./update.sh --branch develop --bibop-version 4.7.0"
+  show "  ./$APP --branch develop --bibop-version 4.7.0"
   show "  Update scripts to versions from master brach and download bibop 4.7.0" $DARK
+  show ""
+}
+
+# Show info about version
+#
+# Code: No
+# Echo: No
+about() {
+  show ""
+  show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - Script for updating ${CL_BIBOP}bibop${CL_NORM} and helper scripts"
+  show ""
+  show "Copyright (C) 2009-$(date +%Y) ESSENTIAL KAOS" $DARK
+  show "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>" $DARK
   show ""
 }
 
 # Show warning message about unsupported option
 #
-# 1: Argument name (String)
+# 1: Option name (String)
 #
 # Code: No
 # Echo: No

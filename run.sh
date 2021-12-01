@@ -3,6 +3,11 @@
 
 ################################################################################
 
+APP="run.sh"
+VER="1.1.0"
+
+################################################################################
+
 NORM=0
 BOLD=1
 UNLN=4
@@ -43,12 +48,51 @@ LOG_FILE="/root/bibop.log"
 
 ################################################################################
 
-SUPPORTED_OPTS="!validate !prepare !recheck"
-SHORT_OPTS="V:!validate P:!prepare R:!recheck"
+SUPPORTED_OPTS="!validate !prepare !recheck !no_colors !help !version"
+SHORT_OPTS="V:!validate P:!prepare R:!recheck nc:!no_colors h:!help v:!version"
 
 ################################################################################
 
+# Main function
+#
+# *: All arguments passed to script
+#
+# Code: No
+# Echo: No
 main() {
+  if [[ -n "$no_colors" || -n "$NO_COLOR" ]] ; then
+    unset NORM BOLD UNLN RED GREEN YELLOW BLUE MAG CYAN GREY DARK
+    unset CL_NORM CL_BOLD CL_UNLN CL_RED CL_GREEN CL_YELLOW CL_BLUE CL_MAG CL_CYAN CL_GREY CL_DARK
+    unset CL_BL_RED CL_BL_GREEN CL_BL_YELLOW CL_BL_BLUE CL_BL_MAG CL_BL_CYAN CL_BL_GREY CL_BL_DARK
+  fi
+
+  if [[ -n "$version" ]] ; then
+    about
+    exit 0
+  fi
+
+  if [[ -n "$help" ]] ; then
+    usage
+    exit 0
+  fi
+
+  if [[ $(id -u) != "0" ]] ; then
+    error "You must run this script as root"
+    exit 1
+  fi
+
+  process "$@"
+
+  exit $?
+}
+
+# Start testing process
+#
+# 1: Branch name (String)
+#
+# Code: No
+# Echo: No
+start() {
   local branch="${1:-develop}"
 
   updatePackages
@@ -69,9 +113,15 @@ main() {
     runTests "$branch"
   fi
 
-  exit $?
+  return $?
 }
 
+# Checkout the latest changes from git repository
+#
+# 1: Branch name (String)
+#
+# Code: No
+# Echo: No
 checkout() {
   local branch="$1"
   local status
@@ -108,6 +158,10 @@ checkout() {
   popd &> /dev/null || return
 }
 
+# Update system packages to the latest versions
+#
+# Code: No
+# Echo: No
 updatePackages() {
   if [[ -f "$MARKER_FILE" ]] ; then
     return
@@ -159,6 +213,10 @@ updatePackages() {
   show "Worker configuration successfully finished!" $GREEN
 }
 
+# Validate all tests
+#
+# Code: Yes
+# Echo: No
 runValidation() {
   show "System is ready. Running recipes validation…"
 
@@ -167,6 +225,12 @@ runValidation() {
   return $?
 }
 
+# Start tests
+#
+# 1: Branch name (String)
+#
+# Code: Yes
+# Echo: No
 runTests() {
   show "System is ready. Running tests…"
 
@@ -193,6 +257,13 @@ runTests() {
   return $?
 }
 
+# Show message
+#
+# 1: Message (String)
+# 2: Message color (Number) [Optional]
+#
+# Code: No
+# Echo: No
 show() {
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
@@ -201,16 +272,69 @@ show() {
   fi
 }
 
+# Print error message
+#
+# 1: Message (String)
+# 2: Message color (Number) [Optional]
+#
+# Code: No
+# Echo: No
 error() {
-  show "$@" $RED 1>&2
+  show "$*" $RED 1>&2
 }
 
-showArgWarn() {
-  error "Unknown option $1" $RED
+# Print usage info
+#
+# Code: No
+# Echo: No
+usage() {
+  show ""
+  show "${CL_BOLD}Usage:${CL_NORM} ./$APP ${CL_GREEN}{options}${CL_NORM} branch"
+  show ""
+  show "Options" $BOLD
+  show ""
+  show "  ${CL_GREEN}--prepare, -P${CL_NORM} ${CL_DARK}....${CL_NORM} Prepare system for tests"
+  show "  ${CL_GREEN}--validate, -V${CL_NORM} ${CL_DARK}...${CL_NORM} Validate recipes ${CL_DARK}(dry run)${CL_NORM}"
+  show "  ${CL_GREEN}--recheck, -R${CL_NORM} ${CL_DARK}....${CL_NORM} Recheck failed tests"
+  show "  ${CL_GREEN}--no-color, -nc${CL_NORM} ${CL_DARK}..${CL_NORM} Disable colors in output"
+  show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}.......${CL_NORM} Show this help message"
+  show "  ${CL_GREEN}--version, -v${CL_NORM} ${CL_DARK}....${CL_NORM} Show information about version"
+  show ""
+  show "Examples" $BOLD
+  show ""
+  show "  ./$APP --prepare"
+  show "  Prepare system for tests" $DARK
+  show ""
+  show "  ./$APP master"
+  show "  Run bibop tests from master branch of kaos-repo" $DARK
+  show ""
+}
+
+# Show info about version
+#
+# Code: No
+# Echo: No
+about() {
+  show ""
+  show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - Script for running ${CL_BIBOP}bibop${CL_NORM} tests over kaos-repo"
+  show ""
+  show "Copyright (C) 2009-$(date +%Y) ESSENTIAL KAOS" $DARK
+  show "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>" $DARK
+  show ""
+}
+
+# Show warning message about unsupported option
+#
+# 1: Option name (String)
+#
+# Code: No
+# Echo: No
+showOptWarn() {
+  error "Unknown option $1"
   exit 1
 }
 
-## OPTIONS PARSING 5 ###################################################################
+## OPTIONS PARSING 5 ###########################################################
 
 if [[ $# -eq 0 ]] ; then
   main
@@ -310,7 +434,6 @@ while [[ -n "$1" ]] ; do
   fi
 
   optt="$optt $1" ; shift
-
 done
 
 [[ -n "$optn" ]] && declare "$optn=true"
@@ -320,4 +443,4 @@ unset opt optn optm optk
 # shellcheck disable=SC2015,SC2086
 [[ -n "$KEEP_OPTS" ]] && main $optv || main ${optt:1}
 
-########################################################################################
+################################################################################
