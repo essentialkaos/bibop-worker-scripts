@@ -4,7 +4,7 @@
 ################################################################################
 
 APP="update.sh"
-VER="1.1.0"
+VER="1.2.0"
 
 ################################################################################
 
@@ -95,9 +95,7 @@ update() {
   showm "Updating ${CL_BIBOP}bibop${CL_NORM} & scripts: "
 
   updateBibop
-  updateBibopMassive
-  updateBibopMultiCheck
-  updateBibopSOExported
+  updateScripts
 
   show " DONE" $GREEN
 }
@@ -128,61 +126,27 @@ updateBibop() {
   printStatusDot
 }
 
-# Update bibop-massive script
+# Update helper scripts
 #
 # Code: No
 # Echo: No
-updateBibopMassive() {
-  download "${branch}/bibop-massive" "/usr/bin/bibop-massive"
+updateScripts() {
+  local script
 
-  if [[ $? -ne 0 ]] ; then
-    printStatusDot true
-    show " ERROR" $RED
-    error "Can't download bibop-massive script"
-    exit 1
-  fi
+  for script in "bibop-massive" "bibop-multi-check" "bibop-so-exported" "bibop-libtest-gen" ; do
+    download "${branch}/scripts/${script}" "/usr/bin/$script"
 
-  chmod +x /usr/bin/bibop-massive
+    if [[ $? -ne 0 ]] ; then
+      printStatusDot true
+      show " ERROR" $RED
+      error "Can't download $script script"
+      exit 1
+    fi
 
-  printStatusDot
-}
+    chmod +x "/usr/bin/$script"
 
-# Update bibop-multi-check script
-#
-# Code: No
-# Echo: No
-updateBibopMultiCheck() {
-  download "${branch}/bibop-multi-check" "/usr/bin/bibop-multi-check"
-
-  if [[ $? -ne 0 ]] ; then
-    printStatusDot true
-    show " ERROR" $RED
-    error "Can't download bibop-multi-check script"
-    exit 1
-  fi
-
-  chmod +x /usr/bin/bibop-multi-check
-
-  printStatusDot
-}
-
-# Update bibop-so-exported script
-#
-# Code: No
-# Echo: No
-updateBibopSOExported() {
-  download "${branch}/bibop-so-exported" "/usr/bin/bibop-so-exported"
-
-  if [[ $? -ne 0 ]] ; then
-    printStatusDot true
-    show " ERROR" $RED
-    error "Can't download bibop-so-exported script"
-    exit 1
-  fi
-
-  chmod +x /usr/bin/bibop-so-exported
-
-  printStatusDot
+    printStatusDot
+  done
 }
 
 # Download file from GitHub repository
