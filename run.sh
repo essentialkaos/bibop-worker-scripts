@@ -203,7 +203,7 @@ updatePackages() {
 
   show "Installing required packages…"
 
-  if ! yum -q -y install nano mtl git tmux curl wget &> /dev/null ; then
+  if ! yum -q -y install nano mtl git tmux curl wget gcc &> /dev/null ; then
     error "Can't install required packages"
     return 1
   fi
