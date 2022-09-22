@@ -18,4 +18,4 @@ jobs:
       - name: Check scripts with Shellcheck
         uses: essentialkaos/shellcheck-action@v1
         with:
-          files: dep.sh run.sh self-update.sh update.sh
+          files: run.sh self-update.sh update.sh
