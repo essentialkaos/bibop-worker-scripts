@@ -133,7 +133,7 @@ updateBibop() {
 updateScripts() {
   local script
 
-  for script in "bibop-massive" "bibop-multi-check" "bibop-so-exported" "bibop-libtest-gen" ; do
+  for script in "bibop-massive" "bibop-dep" "bibop-multi-check" "bibop-so-exported" "bibop-libtest-gen" ; do
     download "${branch}/scripts/${script}" "/usr/bin/$script"
 
     if [[ $? -ne 0 ]] ; then

@@ -13,7 +13,6 @@ This repository contains scripts used on [bibop](https://github.com/essentialkao
 
 - `self-update.sh` — script for updating scripts to the latest versions;
 - `update.sh` — script for updating `bibop` and `bibop-massive`;
-- `dep.sh` — script for installing/uninstalling reqiured packages;
 - `run.sh` — script for running tests.
 
 ### Installation

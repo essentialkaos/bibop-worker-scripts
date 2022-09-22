@@ -4,7 +4,7 @@
 ################################################################################
 
 APP="self-update.sh"
-VER="1.1.0"
+VER="1.1.1"
 
 ################################################################################
 
@@ -91,7 +91,6 @@ update() {
   showm "Updating ${CL_BIBOP}bibop${CL_NORM} worker scripts: "
 
   download "run.sh"
-  download "dep.sh"
   download "update.sh"
   download "self-update.sh"
 
