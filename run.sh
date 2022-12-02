@@ -4,7 +4,7 @@
 ################################################################################
 
 APP="run.sh"
-VER="1.1.0"
+VER="1.2.0"
 
 ################################################################################
 
@@ -53,6 +53,10 @@ SHORT_OPTS="V:!validate P:!prepare R:!recheck nc:!no_colors h:!help v:!version"
 
 ################################################################################
 
+os_version=""
+
+################################################################################
+
 # Main function
 #
 # *: All arguments passed to script
@@ -81,9 +85,26 @@ main() {
     exit 1
   fi
 
+  prepare
   start "$@"
 
   exit $?
+}
+
+# Check system before starting tests
+#
+# 1: Variable Description (Type)
+#
+# Code: No
+# Echo: No
+prepare() {
+  os_version=$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5)
+
+  case "$os_version" in
+    "7"|"8"|"9") ;;
+    *) error "Unknown or unsupported OS"
+       exit 1 ;;
+  esac
 }
 
 # Start testing process
@@ -175,8 +196,7 @@ updatePackages() {
   show "Installing required repositories…"
 
   if ! rpm -q kaos-repo &> /dev/null ; then
-    # shellcheck disable=SC2046
-    if ! yum install -q -y https://yum.kaos.st/get/$(uname -r).rpm &> /dev/null ; then
+    if ! yum install -y "https://yum.kaos.st/kaos-repo-latest.el${os_version}.noarch.rpm" &> /dev/null ; then
       error "Can't install kaos-repo package"
       return 1
     fi
@@ -203,7 +223,7 @@ updatePackages() {
 
   show "Installing required packages…"
 
-  if ! yum -q -y install nano mtl git tmux curl wget gcc &> /dev/null ; then
+  if ! yum -q -y install nano git curl wget gcc &> /dev/null ; then
     error "Can't install required packages"
     return 1
   fi
