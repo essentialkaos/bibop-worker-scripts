@@ -4,7 +4,7 @@
 ################################################################################
 
 APP="update.sh"
-VER="1.2.0"
+VER="1.3.0"
 
 ################################################################################
 
@@ -46,8 +46,8 @@ BIBOP_REPO="https://raw.githubusercontent.com/essentialkaos/bibop"
 
 ################################################################################
 
-SUPPORTED_OPTS="branch bibop_version !help !version"
-SHORT_OPTS="b:branch B:bibop_version h:!help v:!version"
+SUPPORTED_OPTS="branch bibop_version !quiet !help !version"
+SHORT_OPTS="b:branch B:bibop_version q:!quiet h:!help v:!version"
 
 ################################################################################
 
@@ -194,6 +194,10 @@ printStatusDot() {
 # Code: No
 # Echo: No
 show() {
+  if [[ -n "$quiet" ]] ; then
+    return
+  fi
+
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
   else
@@ -209,6 +213,10 @@ show() {
 # Code: No
 # Echo: No
 showm() {
+  if [[ -n "$quiet" ]] ; then
+    return
+  fi
+
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e -n "\e[${2}m${1}\e[0m"
   else
@@ -239,6 +247,7 @@ usage() {
   show ""
   show "  ${CL_GREEN}--branch, -b${CL_NORM} ${CL_GREY}branch${CL_NORM} ${CL_DARK}..........${CL_NORM} Source branch ${CL_DARK}(default: master)${CL_NORM}"
   show "  ${CL_GREEN}--bibop-version, -B${CL_NORM} ${CL_GREY}version${CL_NORM} ${CL_DARK}..${CL_NORM} Bibop version ${CL_DARK}(default: latest)${CL_NORM}"
+  show "  ${CL_GREEN}--quiet, -q${CL_NORM} ${CL_DARK}..................${CL_NORM} Don't output anything"
   show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}...................${CL_NORM} Show this help message"
   show ""
   show "Examples" $BOLD

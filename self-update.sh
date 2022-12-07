@@ -47,8 +47,8 @@ SCRIPTS_DIR="/root"
 
 ################################################################################
 
-SUPPORTED_OPTS="!no_colors !help !version"
-SHORT_OPTS="nc:!no_colors h:!help v:!version"
+SUPPORTED_OPTS="!no_colors !quiet !help !version"
+SHORT_OPTS="nc:!no_colors q:!quiet h:!help v:!version"
 
 ################################################################################
 
@@ -145,6 +145,10 @@ printStatusDot() {
 # Code: No
 # Echo: No
 show() {
+  if [[ -n "$quiet" ]] ; then
+    return
+  fi
+
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
   else
@@ -160,6 +164,10 @@ show() {
 # Code: No
 # Echo: No
 showm() {
+  if [[ -n "$quiet" ]] ; then
+    return
+  fi
+
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e -n "\e[${2}m${1}\e[0m"
   else
@@ -190,6 +198,7 @@ usage() {
   show ""
   show "  ${CL_GREEN}--no-color, -nc${CL_NORM} ${CL_DARK}..........${CL_NORM} Disable colors in output"
   show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}...............${CL_NORM} Show this help message"
+  show "  ${CL_GREEN}--quiet, -q${CL_NORM} ${CL_DARK}..............${CL_NORM} Don't output anything"
   show "  ${CL_GREEN}--version, -v${CL_NORM} ${CL_DARK}............${CL_NORM} Show information about version"
   show ""
 }
