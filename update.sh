@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1117,SC2034,SC2154,SC2181
 
 ################################################################################
 
 APP="update.sh"
-VER="1.3.0"
+VER="1.4.0"
 
 ################################################################################
 
@@ -20,23 +19,41 @@ CYAN=36
 GREY=37
 DARK=90
 
-CL_NORM="\e[0m"
+# shellcheck disable=SC2034
+CL_NORM="\e[${NORM}m"
+# shellcheck disable=SC2034
 CL_BOLD="\e[0;${BOLD};49m"
+# shellcheck disable=SC2034
 CL_UNLN="\e[0;${UNLN};49m"
+# shellcheck disable=SC2034
 CL_RED="\e[0;${RED};49m"
+# shellcheck disable=SC2034
 CL_GREEN="\e[0;${GREEN};49m"
+# shellcheck disable=SC2034
 CL_YELLOW="\e[0;${YELLOW};49m"
+# shellcheck disable=SC2034
 CL_BLUE="\e[0;${BLUE};49m"
+# shellcheck disable=SC2034
 CL_MAG="\e[0;${MAG};49m"
+# shellcheck disable=SC2034
 CL_CYAN="\e[0;${CYAN};49m"
+# shellcheck disable=SC2034
 CL_GREY="\e[0;${GREY};49m"
+# shellcheck disable=SC2034
 CL_DARK="\e[0;${DARK};49m"
+# shellcheck disable=SC2034
 CL_BL_RED="\e[1;${RED};49m"
+# shellcheck disable=SC2034
 CL_BL_GREEN="\e[1;${GREEN};49m"
+# shellcheck disable=SC2034
 CL_BL_YELLOW="\e[1;${YELLOW};49m"
+# shellcheck disable=SC2034
 CL_BL_BLUE="\e[1;${BLUE};49m"
+# shellcheck disable=SC2034
 CL_BL_MAG="\e[1;${MAG};49m"
+# shellcheck disable=SC2034
 CL_BL_CYAN="\e[1;${CYAN};49m"
+# shellcheck disable=SC2034
 CL_BL_GREY="\e[1;${GREY};49m"
 CL_BIBOP="\e[38;5;85m"
 
@@ -46,8 +63,8 @@ BIBOP_REPO="https://raw.githubusercontent.com/essentialkaos/bibop"
 
 ################################################################################
 
-SUPPORTED_OPTS="branch bibop_version !quiet !help !version"
-SHORT_OPTS="b:branch B:bibop_version q:!quiet h:!help v:!version"
+SUPPORTED_OPTS="branch bibop_version !quiet !no_color !help !version"
+SHORT_OPTS="b:branch B:bibop_version q:!quiet nc:!no_color h:!help v:!version"
 
 ################################################################################
 
@@ -63,10 +80,11 @@ bibop_version=""
 # Code: No
 # Echo: No
 main() {
-  if [[ -n "$no_colors" || -n "$NO_COLOR" ]] ; then
+  if [[ -n "$no_color" || -n "$NO_COLOR" ]] ; then
     unset NORM BOLD UNLN RED GREEN YELLOW BLUE MAG CYAN GREY DARK
     unset CL_NORM CL_BOLD CL_UNLN CL_RED CL_GREEN CL_YELLOW CL_BLUE CL_MAG CL_CYAN CL_GREY CL_DARK
     unset CL_BL_RED CL_BL_GREEN CL_BL_YELLOW CL_BL_BLUE CL_BL_MAG CL_BL_CYAN CL_BL_GREY CL_BL_DARK
+    no_color=true
   fi
 
   if [[ -n "$version" ]] ; then
@@ -105,13 +123,7 @@ update() {
 # Code: No
 # Echo: No
 updateBibop() {
-  if [[ -z "$bibop_version" ]] ; then
-    bash <(curl -fsSL https://apps.kaos.st/get) bibop &> /dev/null
-  else
-    bash <(curl -fsSL https://apps.kaos.st/get) bibop "$bibop_version" &> /dev/null
-  fi
-
-  if [[ $? -ne 0 ]] ; then
+  if ! bash <(curl -fsSL https://apps.kaos.st/get) bibop "$bibop_version" &> /dev/null ; then
     printStatusDot true
     show " ERROR" $RED
     error "Can't download bibop binary"
@@ -133,10 +145,8 @@ updateBibop() {
 updateScripts() {
   local script
 
-  for script in "bibop-massive" "bibop-dep" "bibop-multi-check" "bibop-so-exported" "bibop-libtest-gen" ; do
-    download "${branch}/scripts/${script}" "/usr/bin/$script"
-
-    if [[ $? -ne 0 ]] ; then
+  for script in "bibop-massive" "bibop-dep" "bibop-multi-check" "bibop-so-exported" "bibop-libtest-gen" "bibop-linked" ; do
+    if ! download "${branch}/scripts/${script}" "/usr/bin/$script" ; then
       printStatusDot true
       show " ERROR" $RED
       error "Can't download $script script"
@@ -198,7 +208,7 @@ show() {
     return
   fi
 
-  if [[ -n "$2" && -z "$no_colors" ]] ; then
+  if [[ -n "$2" && -z "$no_color" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
   else
     echo -e "$*"
@@ -217,7 +227,7 @@ showm() {
     return
   fi
 
-  if [[ -n "$2" && -z "$no_colors" ]] ; then
+  if [[ -n "$2" && -z "$no_color" ]] ; then
     echo -e -n "\e[${2}m${1}\e[0m"
   else
     echo -e -n "$*"
@@ -248,7 +258,9 @@ usage() {
   show "  ${CL_GREEN}--branch, -b${CL_NORM} ${CL_GREY}branch${CL_NORM} ${CL_DARK}..........${CL_NORM} Source branch ${CL_DARK}(default: master)${CL_NORM}"
   show "  ${CL_GREEN}--bibop-version, -B${CL_NORM} ${CL_GREY}version${CL_NORM} ${CL_DARK}..${CL_NORM} Bibop version ${CL_DARK}(default: latest)${CL_NORM}"
   show "  ${CL_GREEN}--quiet, -q${CL_NORM} ${CL_DARK}..................${CL_NORM} Don't output anything"
+  show "  ${CL_GREEN}--no-color, -nc${CL_NORM} ${CL_DARK}..............${CL_NORM} Disable colors in output"
   show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}...................${CL_NORM} Show this help message"
+  show "  ${CL_GREEN}--version, -v${CL_NORM} ${CL_DARK}................${CL_NORM} Show information about version"
   show ""
   show "Examples" $BOLD
   show ""
