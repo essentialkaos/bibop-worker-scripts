@@ -265,7 +265,7 @@ usage() {
   show "Examples" $BOLD
   show ""
   show "  ./$APP --branch develop --bibop-version 4.7.0"
-  show "  Update scripts to versions from master brach and download bibop 4.7.0" $DARK
+  show "  Update scripts to versions from master branch and download bibop 4.7.0" $DARK
   show ""
 }
 

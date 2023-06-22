@@ -3,7 +3,7 @@
 ################################################################################
 
 APP="run.sh"
-VER="1.2.1"
+VER="1.2.2"
 
 ################################################################################
 
@@ -205,8 +205,17 @@ updatePackages() {
   fi
 
   if ! yum -q clean expire-cache &> /dev/null ; then
-    error "Can't clean yum cache"
+    error "Can't clean yum/dnf cache"
     return 1
+  fi
+
+  if [[ "$os_version" == "7" ]] ; then
+    show "Removing incompatible packages…"
+
+    if ! yum remove -y libevent &> /dev/null ; then
+      error "Can't remove incompatible packages"
+      return 1
+    fi
   fi
 
   show "Installing required repositories…"
@@ -228,7 +237,7 @@ updatePackages() {
   show "Updating system packages…"
 
   if ! yum -q clean expire-cache &> /dev/null ; then
-    error "Can't clean yum cache"
+    error "Can't clean yum/dnf cache"
     return 1
   fi
   
