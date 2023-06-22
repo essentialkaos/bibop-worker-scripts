@@ -26,7 +26,7 @@ test: ## Run shellcheck tests
 help: ## Show this info
 	@echo -e '\nSupported targets:\n'
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[33m%-19s\033[0m %s\n", $$1, $$2}'
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[33m%-15s\033[0m %s\n", $$1, $$2}'
 	@echo -e ''
 
 ################################################################################
