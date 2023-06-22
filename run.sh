@@ -209,7 +209,7 @@ updatePackages() {
     return 1
   fi
 
-  if [[ "$os_version" == "7" ]] ; then
+  if [[ "$os_version" == "8" ]] ; then
     show "Removing incompatible packages…"
 
     if ! yum remove -y libevent &> /dev/null ; then
