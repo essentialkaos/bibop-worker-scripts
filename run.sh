@@ -213,7 +213,7 @@ updatePackages() {
   if [[ "$os_version" == "8" ]] ; then
     show "Removing incompatible packages…"
 
-    if ! yum remove -y libevent &> /dev/null ; then
+    if ! dnf remove -y libevent &> /dev/null ; then
       error "Can't remove incompatible packages"
       return 1
     fi
@@ -222,7 +222,7 @@ updatePackages() {
   show "Installing required repositories…"
 
   if ! rpm -q kaos-repo &> /dev/null ; then
-    if ! yum install -y "https://yum.kaos.st/kaos-repo-latest.el${os_version}.noarch.rpm" &> /dev/null ; then
+    if ! yum install -y "https://pkgs.kaos.st/kaos-repo-latest.el${os_version}.noarch.rpm" &> /dev/null ; then
       error "Can't install kaos-repo package"
       return 1
     fi
