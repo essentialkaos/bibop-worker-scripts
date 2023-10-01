@@ -18,7 +18,7 @@ This repository contains scripts used on [bibop](https://github.com/essentialkao
 ### Installation
 
 ```bash
-bash <(curl -fsSL https://kaos.sh/bibop-worker-scripts/self-update.sh) && ./update.sh
+bash <(curl -fsSL https://kaos.sh/bibop-worker-scripts/self-update.sh) && ./bibop/update.sh
 
 ```
 

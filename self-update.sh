@@ -60,7 +60,7 @@ CL_BIBOP="\e[38;5;85m"
 ################################################################################
 
 REPO="https://kaos.sh/bibop-worker-scripts"
-SCRIPTS_DIR="/root"
+SCRIPTS_DIR="/bibop"
 
 ################################################################################
 
@@ -108,9 +108,11 @@ main() {
 update() {
   showm "Updating ${CL_BIBOP}bibop${CL_NORM} worker scripts: "
 
-  download "run.sh"
-  download "update.sh"
-  download "self-update.sh"
+  pushd "$SCRIPTS_DIR" &> /dev/null || exit 1
+    download "run.sh"
+    download "update.sh"
+    download "self-update.sh"
+  popd &> /dev/null || exit 1
 
   show " DONE" $GREEN
 }

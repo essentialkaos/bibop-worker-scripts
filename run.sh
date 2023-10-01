@@ -59,9 +59,10 @@ CL_BL_GREY="\e[1;${GREY};49m"
 ################################################################################
 
 REPO="https://github.com/essentialkaos/kaos-repo.git"
-ERROR_DIR="/root/errors"
-MARKER_FILE="/root/.bibop-worker"
-LOG_FILE="/root/bibop.log"
+MAIN_DIR="/bibop"
+ERROR_DIR="$MAIN_DIR/errors"
+MARKER_FILE="$MAIN_DIR/.bibop-worker"
+LOG_FILE="$MAIN_DIR/bibop.log"
 
 ################################################################################
 
@@ -163,7 +164,7 @@ checkout() {
   local branch="$1"
   local status
 
-  pushd /root &> /dev/null || return
+  pushd "$MAIN_DIR" &> /dev/null || return
 
   if [[ ! -e kaos-repo ]] ; then
     if [[ -n "$branch" ]] ; then
@@ -265,7 +266,7 @@ updatePackages() {
 runValidation() {
   show "System is ready. Running recipes validation…"
 
-  bibop-massive -V /root/kaos-repo/tests
+  bibop-massive -V "$MAIN_DIR/kaos-repo/tests"
 
   return $?
 }
@@ -297,7 +298,7 @@ runTests() {
   fi
 
   # shellcheck disable=SC2086
-  bibop-massive -e "$ERROR_DIR" -l "$LOG_FILE" $opts /root/kaos-repo/tests
+  bibop-massive -e "$ERROR_DIR" -l "$LOG_FILE" $opts "$MAIN_DIR/kaos-repo/tests"
 
   return $?
 }
