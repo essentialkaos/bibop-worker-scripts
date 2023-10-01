@@ -3,7 +3,7 @@
 ################################################################################
 
 APP="self-update.sh"
-VER="1.1.2"
+VER="1.2.0"
 
 ################################################################################
 
@@ -107,6 +107,10 @@ main() {
 # Echo: No
 update() {
   showm "Updating ${CL_BIBOP}bibop${CL_NORM} worker scripts: "
+
+  if [[ ! -d "$SCRIPTS_DIR" ]] ; then
+    mkdir "$SCRIPTS_DIR"
+  fi
 
   pushd "$SCRIPTS_DIR" &> /dev/null || exit 1
     download "run.sh"
