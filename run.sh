@@ -210,13 +210,11 @@ updatePackages() {
     return 1
   fi
 
-  if [[ "$os_version" == "8" ]] ; then
-    show "Removing incompatible packages…"
+  show "Removing incompatible (outpdated) packages…"
 
-    if ! dnf remove -y libevent &> /dev/null ; then
-      error "Can't remove incompatible packages"
-      return 1
-    fi
+  if ! yum remove -y libevent &> /dev/null ; then
+    error "Can't remove incompatible packages"
+    return 1
   fi
 
   show "Installing required repositories…"
