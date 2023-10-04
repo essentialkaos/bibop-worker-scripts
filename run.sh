@@ -252,6 +252,8 @@ updatePackages() {
     return 1
   fi
 
+  setenforce 0
+
   touch "$MARKER_FILE"
 
   show "Worker configuration successfully finished!" $GREEN
