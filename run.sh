@@ -233,6 +233,13 @@ updatePackages() {
     fi
   fi
 
+  if [[ "$os_version" == 7 ]] ; then
+    if ! yum install -q -y yum-plugin-priorities &> /dev/null ; then
+      error "Can't install yum-plugin-priorities package"
+      return 1
+    fi
+  fi
+
   show "Updating system packages…"
 
   if ! yum -q clean expire-cache &> /dev/null ; then
