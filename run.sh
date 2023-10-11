@@ -3,7 +3,7 @@
 ################################################################################
 
 APP="run.sh"
-VER="1.3.0"
+VER="1.3.1"
 
 ################################################################################
 
@@ -210,11 +210,12 @@ updatePackages() {
     return 1
   fi
 
-  show "Removing incompatible (outpdated) packages…"
-
-  if ! yum remove -y libevent &> /dev/null ; then
-    error "Can't remove incompatible packages"
-    return 1
+  if rpm -q libevent &> /dev/null ; then
+    show "Removing incompatible (outpdated) packages…"
+    if ! yum remove -y libevent &> /dev/null ; then
+      error "Can't remove incompatible packages"
+      return 1
+    fi
   fi
 
   show "Installing required repositories…"
