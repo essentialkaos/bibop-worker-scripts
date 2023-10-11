@@ -210,11 +210,14 @@ updatePackages() {
     return 1
   fi
 
-  if rpm -q libevent &> /dev/null ; then
-    show "Removing incompatible (outpdated) packages…"
-    if ! yum remove -y libevent &> /dev/null ; then
-      error "Can't remove incompatible packages"
-      return 1
+  # Remove libevent from el7/el8
+  if [[ $os_version -le 8 ]] ; then
+    if rpm -q libevent &> /dev/null ; then
+      show "Removing incompatible (outpdated) packages…"
+      if ! yum remove -y libevent &> /dev/null ; then
+        error "Can't remove incompatible packages"
+        return 1
+      fi
     fi
   fi
 
@@ -234,7 +237,7 @@ updatePackages() {
     fi
   fi
 
-  if [[ "$os_version" == 7 ]] ; then
+  if [[ $os_version -eq 7 ]] ; then
     if ! yum install -q -y yum-plugin-priorities &> /dev/null ; then
       error "Can't install yum-plugin-priorities package"
       return 1
