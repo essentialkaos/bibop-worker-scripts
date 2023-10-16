@@ -210,17 +210,6 @@ updatePackages() {
     return 1
   fi
 
-  # Remove libevent from el7/el8
-  if [[ $os_version -le 8 ]] ; then
-    if rpm -q libevent &> /dev/null ; then
-      show "Removing incompatible (outpdated) packages…"
-      if ! yum remove -y libevent &> /dev/null ; then
-        error "Can't remove incompatible packages"
-        return 1
-      fi
-    fi
-  fi
-
   show "Installing required repositories…"
 
   if ! rpm -q kaos-repo &> /dev/null ; then
@@ -254,6 +243,16 @@ updatePackages() {
   if ! yum -q -y update &> /dev/null ; then
     error "Can't update system packages"
     return 1
+  fi
+
+  if [[ $os_version -le 8 ]] ; then
+    if rpm -q libevent &> /dev/null ; then
+      show "Removing incompatible (outpdated) packages…"
+      if ! yum remove -y libevent &> /dev/null ; then
+        error "Can't remove incompatible packages"
+        return 1
+      fi
+    fi
   fi
 
   show "Installing required packages…"
