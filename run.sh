@@ -347,6 +347,7 @@ execCmd() {
 
   if [[ -n "$verbose" ]] ; then
     show ""
+    # shellcheck disable=SC2048
     $*
     ec=$?
     show ""
@@ -354,6 +355,7 @@ execCmd() {
     return $ec
   fi
 
+  # shellcheck disable=SC2048
   $* &> /dev/null
   return $?
 }
