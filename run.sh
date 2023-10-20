@@ -172,7 +172,7 @@ checkout() {
       git clone --depth=1 -b "$branch" "$REPO" &> /dev/null
       status=$?
     else
-      show "Checkout repository…"
+      show "Checkout repository…" $BOLD
       git clone --depth=1 "$REPO" &> /dev/null
       status=$?
     fi
@@ -180,6 +180,7 @@ checkout() {
     pushd kaos-repo &> /dev/null || return
 
     show "Fetching the latests changes from repository…" $BOLD
+    
     git pull &> /dev/null
     status=$?
 
@@ -281,7 +282,7 @@ updatePackages() {
 removeConflictingPackages() {
   if [[ $os_version -le 8 ]] ; then
     if rpm -q libevent &> /dev/null ; then
-      show "Removing incompatible (outpdated) packages…"
+      show "Removing incompatible (outpdated) packages…" $BOLD
       if ! execCmd yum remove -y libevent ; then
         error "Can't remove incompatible packages"
         return 1
@@ -297,7 +298,7 @@ removeConflictingPackages() {
 # Code: Yes
 # Echo: No
 runValidation() {
-  show "System is ready. Running recipes validation…"
+  show "System is ready. Running recipes validation…" $GREY
 
   bibop-massive -V "$MAIN_DIR/kaos-repo/tests"
 
