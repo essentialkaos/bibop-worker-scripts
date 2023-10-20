@@ -3,7 +3,7 @@
 ################################################################################
 
 APP="run.sh"
-VER="1.3.1"
+VER="1.4.0"
 
 ################################################################################
 
@@ -66,7 +66,7 @@ LOG_FILE="$MAIN_DIR/bibop.log"
 
 ################################################################################
 
-SUPPORTED_OPTS="!validate !prepare !recheck !no_color !help !version"
+SUPPORTED_OPTS="!validate !prepare !recheck !verbose !no_color !help !version"
 SHORT_OPTS="V:!validate P:!prepare R:!recheck nc:!no_color h:!help v:!version"
 
 ################################################################################
@@ -168,7 +168,7 @@ checkout() {
 
   if [[ ! -e kaos-repo ]] ; then
     if [[ -n "$branch" ]] ; then
-      show "Checkout repository (branch: $branch)…"
+      show "Checkout repository (branch: $branch)…" $BOLD
       git clone --depth=1 -b "$branch" "$REPO" &> /dev/null
       status=$?
     else
@@ -179,7 +179,7 @@ checkout() {
   else
     pushd kaos-repo &> /dev/null || return
 
-    show "Fetching the latests changes from repository…"
+    show "Fetching the latests changes from repository…" $BOLD
     git pull &> /dev/null
     status=$?
 
@@ -205,68 +205,91 @@ updatePackages() {
     return
   fi
 
-  if ! yum -q clean expire-cache &> /dev/null ; then
+  show "Cleaning cache…" $BOLD
+
+  if ! execCmd yum clean all ; then
     error "Can't clean yum/dnf cache"
     return 1
   fi
 
-  show "Installing required repositories…"
+  show "Installing required repositories…" $BOLD
 
   if ! rpm -q kaos-repo &> /dev/null ; then
-    if ! yum install -y "https://pkgs.kaos.st/kaos-repo-latest.el${os_version}.noarch.rpm" &> /dev/null ; then
+    if ! execCmd yum install -y "https://pkgs.kaos.st/kaos-repo-latest.el${os_version}.noarch.rpm" ; then
       error "Can't install kaos-repo package"
       return 1
     fi
   fi
 
   if ! rpm -q epel-release &> /dev/null ; then
-    if ! yum install -q -y epel-release &> /dev/null ; then
+    if ! execCmd yum install -y epel-release ; then
       error "Can't install epel-release package"
       return 1
     fi
   fi
 
   if [[ $os_version -eq 7 ]] ; then
-    if ! yum install -q -y yum-plugin-priorities &> /dev/null ; then
+    if ! execCmd yum install -y yum-plugin-priorities ; then
       error "Can't install yum-plugin-priorities package"
       return 1
     fi
   fi
 
-  show "Updating system packages…"
+  if ! removeConflictingPackages ; then
+    return 1
+  fi
 
-  if ! yum -q clean expire-cache &> /dev/null ; then
+  show "Updating system packages…" $BOLD
+
+  if ! execCmd yum clean expire-cache ; then
     error "Can't clean yum/dnf cache"
     return 1
   fi
   
-  if ! yum -q -y update &> /dev/null ; then
+  if ! execCmd yum -y update ; then
     error "Can't update system packages"
     return 1
   fi
 
+  if ! removeConflictingPackages ; then
+    return 1
+  fi
+
+  show "Installing required packages…" $BOLD
+
+  if ! execCmd yum -y install nano git curl wget gcc ; then
+    error "Can't install required packages"
+    return 1
+  fi
+
+  show "Disable SELinux…" $BOLD
+
+  if ! setenforce 0 ; then
+    error "Can't disable SELinux"
+    return 1
+  fi
+
+  touch "$MARKER_FILE"
+
+  show "Worker configuration successfully finished!" $GREEN
+}
+
+# Removes all incompatible packages
+#
+# Code: Yes
+# Echo: No
+removeConflictingPackages() {
   if [[ $os_version -le 8 ]] ; then
     if rpm -q libevent &> /dev/null ; then
       show "Removing incompatible (outpdated) packages…"
-      if ! yum remove -y libevent &> /dev/null ; then
+      if ! execCmd yum remove -y libevent ; then
         error "Can't remove incompatible packages"
         return 1
       fi
     fi
   fi
 
-  show "Installing required packages…"
-
-  if ! yum -q -y install nano git curl wget gcc &> /dev/null ; then
-    error "Can't install required packages"
-    return 1
-  fi
-
-  setenforce 0
-
-  touch "$MARKER_FILE"
-
-  show "Worker configuration successfully finished!" $GREEN
+  return 0
 }
 
 # Validate all tests
@@ -313,6 +336,28 @@ runTests() {
   return $?
 }
 
+# Run command
+#
+# *: Command with all options
+#
+# Code: Yes
+# Echo: No
+execCmd() {
+  local ec
+
+  if [[ -n "$verbose" ]] ; then
+    show ""
+    $*
+    ec=$?
+    show ""
+
+    return $ec
+  fi
+
+  $* &> /dev/null
+  return $?
+}
+
 # Show message
 #
 # 1: Message (String)
@@ -352,6 +397,7 @@ usage() {
   show "  ${CL_GREEN}--prepare, -P${CL_NORM} ${CL_DARK}....${CL_NORM} Prepare system for tests"
   show "  ${CL_GREEN}--validate, -V${CL_NORM} ${CL_DARK}...${CL_NORM} Validate recipes ${CL_DARK}(dry run)${CL_NORM}"
   show "  ${CL_GREEN}--recheck, -R${CL_NORM} ${CL_DARK}....${CL_NORM} Recheck failed tests"
+  show "  ${CL_GREEN}--verbose${CL_NORM} ${CL_DARK}........${CL_NORM} Verbose output"
   show "  ${CL_GREEN}--no-color, -nc${CL_NORM} ${CL_DARK}..${CL_NORM} Disable colors in output"
   show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}.......${CL_NORM} Show this help message"
   show "  ${CL_GREEN}--version, -v${CL_NORM} ${CL_DARK}....${CL_NORM} Show information about version"
