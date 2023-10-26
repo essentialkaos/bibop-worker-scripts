@@ -236,6 +236,12 @@ updatePackages() {
     fi
   fi
 
+  # Try to enable CodeReady Builder repository
+  if [[ $os_version -eq 9 ]] ; then
+    execCmd dnf config-manager --set-enabled crb
+    execCmd dnf config-manager --set-enabled ol9_codeready_builder
+  fi
+
   if ! removeConflictingPackages ; then
     return 1
   fi
@@ -280,11 +286,17 @@ updatePackages() {
 # Code: Yes
 # Echo: No
 removeConflictingPackages() {
+  if rpm -q cloud-init &> /dev/null ; then
+    if ! execCmd yum remove -y cloud-init ; then
+      error "Can't remove cloud-init package"
+    fi
+  fi
+
   if [[ $os_version -le 8 ]] ; then
     if rpm -q libevent &> /dev/null ; then
-      show "Removing incompatible (outpdated) packages…" $BOLD
+      show "Removing libevent package…" $BOLD
       if ! execCmd yum remove -y libevent ; then
-        error "Can't remove incompatible packages"
+        error "Can't remove libevent package"
         return 1
       fi
     fi
