@@ -255,7 +255,7 @@ updatePackages() {
 
   # Try to update almalinux-release with new keys before updating all package
   if rpm -q almalinux-release &> /dev/null ; then
-    execCmd yum update almalinux-release
+    execCmd yum -y update almalinux-release
   fi
   
   if ! execCmd yum -y update ; then
