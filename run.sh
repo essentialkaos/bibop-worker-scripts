@@ -3,7 +3,7 @@
 ################################################################################
 
 APP="run.sh"
-VER="1.4.0"
+VER="1.4.1"
 
 ################################################################################
 
@@ -251,6 +251,11 @@ updatePackages() {
   if ! execCmd yum clean expire-cache ; then
     error "Can't clean yum/dnf cache"
     return 1
+  fi
+
+  # Try to update almalinux-release with new keys before updating all package
+  if rpm -q almalinux-release &> /dev/null ; then
+    execCmd yum update almalinux-release
   fi
   
   if ! execCmd yum -y update ; then
